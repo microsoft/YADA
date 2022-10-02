@@ -4,9 +4,9 @@ This repo contains code for a 3-tier application that can be used to explore dif
 
 ![Application architecture](web/app_arch.png)
 
-Both the web tier and the application tier will give information about the platform where they are running (hostname, public IP address, IMDS and more).
+Both the web tier and the application tier will give information about the platform where they are running (hostname, public IP address, IMDS and more). The web tier is customizable with different brandings and background colors. With the default branding and cyan background it looks like this:
 
-The web tier is customizable with different brandings.
+![Web tier](./homepage_screenshot.png)
 
 Both app and web tiers are containerized and can be deployed in different platforms: Virtual machines with Docker (such as [Flatcar](https://www.flatcar.org/)), Kubernetes, Azure Container Instances, Azure Web Apps or any other container-based architecture.
 
