@@ -9,12 +9,12 @@ Simple PHP web page that can access the [YADA API](../api/README.md). It will sh
 The container requires these environment variables:
 
 * `API_URL`: URL where the SQL API can be found, for example `http://1.2.3.4:8080` or `http://api:8080`
-* `BACKGROUND`: HTML color for the background, this is useful when deploying different versions of the app behind a LB. Some color examples:
+* `BACKGROUND` (optional): HTML color for the background, this is useful when deploying different versions of the app behind a LB. Some color examples:
   * `#aaf1f2`: cyan
   * `#92cb96`: light green
   * `#fcba87`: light orange
   * `#fdfbc0`: yellow
-* `BRANDING`: you can optionally modify the branding of YADA to match events, such as [What The Hack](https://aka.ms/wth) or [Openhack](https://openhack.microsoft.com).
+* `BRANDING` (optional): you can optionally modify the branding of YADA to match events, such as [What The Hack](https://aka.ms/wth) or [Openhack](https://openhack.microsoft.com).
 
 ## Build
 
