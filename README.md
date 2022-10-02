@@ -2,7 +2,7 @@
 
 This repo contains code for a 3-tier application that can be used to explore different features of workload platforms. It is composed of a web tier and a REST-based application tier that will access a database. The database can be SQL Server, MySQL or Postgres, and no special databases need to be created:
 
-![Application architecture](web/app_arch.png)
+![Application architecture](web/app_arch.orig.png)
 
 Both the web tier and the application tier will give information about the platform where they are running (hostname, public IP address, IMDS and more). The web tier is customizable with different brandings and background colors. With the default branding and cyan background it looks like this:
 

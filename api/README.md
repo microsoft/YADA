@@ -36,7 +36,7 @@ Note that environment variables can also be injected as files in the `/secrets` 
 You can build the image locally with:
 
 ```bash
-docker build -t fasthack/yadaapi:1.0 .
+docker build -t your_dockerhub_user/yadaapi:1.0 .
 ```
 
 or in a registry such as Azure Container Registry with:
