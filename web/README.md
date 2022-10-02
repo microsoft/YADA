@@ -16,6 +16,8 @@ The container requires these environment variables:
   * `#fdfbc0`: yellow
 * `BRANDING` (optional): you can optionally modify the branding of YADA to match events, such as [What The Hack](https://aka.ms/wth) or [Openhack](https://openhack.microsoft.com).
 
+The container offers as well the page `/healthcheck.html` to monitor the availability of the web server.
+
 ## Build
 
  You can build it locally with:

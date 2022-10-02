@@ -16,7 +16,7 @@ Here you can find the source files to build this container. The container is a w
 * `/api/ioperf`: runs a quick performance check on the file system. It takes these parameters: `file` (default "/tmp/iotest"), `size` (default 128, in MB), `writeblocksize` (default 128, in KB) and `readblocksize` (default 8, in KB)
 * `/api/sqlsrcipinit`: the previous endpoints do not modify the database. If you want to modify the database, you need first to create a table with this endpoint
 * `/api/sqlsrciplog`: this endpoint will create a new record in the table created with the previous endpoint (`sqlsrcipinit`) with a timestamp and the source IP address as seen by the database.
-* `/api/akvsecret`: this endpoint will try to retrieve a secret from an Azure Key Vault. It requires the parameters `akvname` and `akvsecret`.
+* `/api/akvsecret`: this endpoint will try to retrieve a secret from an Azure Key Vault. It requires the parameters `akvname` and `akvsecret`. This can be used to test Azure authentication using concepts like pod/workload identity.
 
 The container supports these environment variables:
 
