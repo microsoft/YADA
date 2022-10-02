@@ -81,16 +81,16 @@ if ($platform == "vm") {
                 <ul class="nav">
                 <li><a href="index.php">Home</a></li>
                     <li><a href="info.php">Info</a></li>
-                    <li><a href="<?php print($first_link_url); ?>"><?php print($first_link_text); ?></a></li>
+                    <li><a target="_blank" href="<?php print($first_link_url); ?>"><?php print($first_link_text); ?></a></li>
                     <li><a href="healthcheck.html">Healthcheck</a></li>
                     <li><a href="healthcheck.php">PHPinfo</a></li>
                     <?php
                     if ($show_web_docs == "yes") {
-                        print('                    <li><a href="https://github.com/Microsoft/YADA/blob/master/web/README.md">Web docs</a></li>');
+                        print('                    <li><a target="_blank" href="https://github.com/Microsoft/YADA/blob/master/web/README.md">Web docs</a></li>');
                     }
                     ?><?php
                     if ($show_api_docs == "yes") {
-                        print('                    <li><a href="https://github.com/Microsoft/YADA/blob/master/api/README.md">API docs</a></li>');
+                        print('                    <li><a target="_blank" href="https://github.com/Microsoft/YADA/blob/master/api/README.md">API docs</a></li>');
                     }
                     ?>
                     <li style="color:LightGray;"><?php
