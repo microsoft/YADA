@@ -81,7 +81,7 @@ if ($platform == "vm") {
                 <ul class="nav">
                 <li><a href="index.php">Home</a></li>
                     <li><a href="info.php">Info</a></li>
-                    <li><a hef="<?php print($first_link_url); ?>"><?php print($first_link_text); ?></a></li>
+                    <li><a href="<?php print($first_link_url); ?>"><?php print($first_link_text); ?></a></li>
                     <li><a href="healthcheck.html">Healthcheck</a></li>
                     <li><a href="healthcheck.php">PHPinfo</a></li>
                     <?php
