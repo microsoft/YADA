@@ -12,6 +12,7 @@ if (getenv('BRANDING') == 'openhack') {
     $show_web_docs = "no";
     $show_api_docs = "no";
     $show_auth = "no";
+    $show_ingress_section = "no";
 // WTH branding
 } elseif (getenv('BRANDING') == 'whatthehack') {
     $logo_image = "wth-logo.png";
@@ -24,18 +25,20 @@ if (getenv('BRANDING') == 'openhack') {
     $show_web_docs = "yes";
     $show_api_docs = "yes";
     $show_auth = "no";
+    $show_ingress_section = "yes";
 // Default YADA branding
 } else {
     $logo_image = "yada-logo.png";
     $platform = "container";
     $page_title = "Yet Another Demo App";
-    $h1_header = "Yet Another Demo App";
+    $h1_header = "Diagnostics 3-Tier Application";
     $first_link_text = "Repo";
     $first_link_url = "https://github.com/microsoft/YADA";
     $first_line = "This is a sample diagnostics app that can be used to explore the infrastructure where it is deployed. ";
     $show_web_docs = "yes";
     $show_api_docs = "yes";
     $show_auth = "yes";
+    $show_ingress_section = "yes";
 }
 // Depending on platform get hostname (either from OS or from IMDS)
 if ($platform == "vm") {
@@ -150,11 +153,22 @@ if ($platform == "vm") {
                             </ul>
                         </li>
                     </ul>
+                    <?php
+                    if ($show_ingress_section == "yes") {
+                        print("                    <br>");
+                        print("                    <h3>Direct access to API</h3>");
+                        print("                    <p>Note that these links will only work if used with a reverse-proxy, such an ingress controller in Kubernetes or an Azure Application Gateway</p>");
+                        print("                    <ul>");
+                        print("                        <li><a href='/api/healthcheck'>API health status</a></li>");
+                        print("                        <li><a href='/api/sqlversion'>SQL Server version</a></li>");
+                        print("                        <li><a href='/api/ip'>API connectivity information</a></li>");
+                        print("                    </ul>");
+                    }
+                    ?>
                     <br>
                     <h3>Other API calls</h3>
                     <p>The following sections show how to call other endpoints of the API:</p>
 
-                    <hr>
                     <h4 id="api-sqlsrcip">SQL source IP</h4>
                     <p>Source IP from which the database sees the API:</p>
                     <form action="index.php#api-sqlsrcip" method="get">
@@ -267,7 +281,7 @@ if ($platform == "vm") {
         </div>
         <div class="footer">
             <div class="container">
-                &copy; MIT License
+                MIT License
             </div>
         </div>
     </body>

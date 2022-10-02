@@ -8,6 +8,49 @@ Both the web tier and the application tier will give information about the platf
 
 The web tier is customizable with different brandings.
 
+Both app and web tiers are containerized and can be deployed in different platforms: Virtual machines with Docker (such as [Flatcar](https://www.flatcar.org/)), Kubernetes, Azure Container Instances, Azure Web Apps or any other container-based architecture.
+
+## Deployment on Azure Container Instances
+
+In the files for the [web/README](web/README.md) and [api/README](api/README.md) you can find additional instructions for deployment in other platforms, in this example you can find the deployment of all three tiers using Azure Container Instances for the web and API tiers, and Azure SQL Database for the data tier:
+
+```bash
+# Variables
+rg=rg$RANDOM
+location=eastus
+sql_server_name=sqlserver$RANDOM
+sql_db_name=mydb
+sql_username=azure
+sql_password=$(openssl rand -base64 10)  # 10-character random password
+
+# Create Resource Group
+az group create -n $rg -l $location
+
+# Create Azure SQL Server
+az sql server create -n $sql_server_name -g $rg -l $location --admin-user "$sql_username" --admin-password "$sql_password"
+az sql db create -n $sql_db_name -s $sql_server_name -g $rg -e Basic -c 5 --no-wait
+sql_server_fqdn=$(az sql server show -n $sql_server_name -g $rg -o tsv --query fullyQualifiedDomainName) && echo $sql_server_fqdn
+
+# Create ACI for API tier
+az container create -n api -g $rg \
+    -e "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=$sql_server_fqdn" \
+    --image erjosito/yadaapi:1.0 --ip-address public --ports 8080
+api_pip_address=$(az container show -n api -g $rg --query ipAddress.ip -o tsv)
+healthcheck=$(curl -s "http://${api_pip_address}:8080/api/healthcheck" | jq -r .health)
+if [[ "$healthcheck" == "OK" ]]; then
+    api_outbound_pip=$(curl -s "http://${api_pip_address}:8080/api/ip" | jq -r .my_public_ip)
+    az sql server firewall-rule create -g $rg -s $sql_server_name -n yadaapi --start-ip-address $api_outbound_pip --end-ip-address $api_outbound_pip
+fi
+
+# Create ACI for web tier with cyan background and WTH branding. Other colors you can use: #92cb96 (green), #fcba87 (orange), #fdfbc0 (yellow)
+az container create -n web -g $rg -e "API_URL=http://${api_pip_address}:8080" "BACKGROUND=#aaf1f2"  "BRANDING=whatthehack" \
+    --image erjosito/yadaweb:1.0 --ip-address public --ports 80
+web_pip_address=$(az container show -n web -g $rg --query ipAddress.ip -o tsv)
+
+# Finish
+echo "You can point your browser to http://${web_pip_address}"
+```
+
 ## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a

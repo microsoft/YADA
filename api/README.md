@@ -1,4 +1,4 @@
-# SQL API Container
+# YADA API Container
 
 ## Usage
 
@@ -36,13 +36,13 @@ Note that environment variables can also be injected as files in the `/secrets` 
 You can build the image locally with:
 
 ```bash
-docker build -t fasthack/sqlapi:1.0 .
+docker build -t fasthack/yadaapi:1.0 .
 ```
 
 or in a registry such as Azure Container Registry with:
 
 ```bash
-az acr build -r <your_acr_registry> -g <your_azure_resource_group> -t sqlapi:1.0 .
+az acr build -r <your_acr_registry> -g <your_azure_resource_group> -t yadaapi:1.0 .
 ```
 
 ## Deploy
@@ -78,7 +78,7 @@ Replace the image and the variables with the relevant values for your environmen
 
 ```bash
 # Deploy API on Docker
-docker run -d -p 8080:8080 -e "SQL_SERVER_FQDN=yourdatabase.com" -e "SQL_SERVER_USERNAME=your_db_admin_user" -e "SQL_SERVER_PASSWORD=your_db_admin_password" --name api fasthacks/sqlapi:1.0
+docker run -d -p 8080:8080 -e "SQL_SERVER_FQDN=yourdatabase.com" -e "SQL_SERVER_USERNAME=your_db_admin_user" -e "SQL_SERVER_PASSWORD=your_db_admin_password" --name api erjosito/yadaapi:1.0
 ```
 
 ### Run this image in Azure Container Instances
@@ -93,7 +93,7 @@ sql_username=your_db_admin_user
 sql_password=your_db_admin_password
 az container create -n api -g $rg \
     -e "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=$sql_server_fqdn" \
-    --image fasthacks/sqlapi:1.0 --ip-address public --ports 8080
+    --image erjosito/yadaapi:1.0 --ip-address public --ports 8080
 ```
 
 If running the image from your own Azure Container Registry:
@@ -106,7 +106,7 @@ acr_usr=$(az acr credential show -n "$acr_name" -g "$rg" --query 'username' -o t
 acr_pwd=$(az acr credential show -n "$acr_name" -g "$rg" --query 'passwords[0].value' -o tsv)
 az container create -n api -g $rg  \
     -e "SQL_SERVER_USERNAME=${sql_username}" "SQL_SERVER_PASSWORD=${sql_password}" "SQL_SERVER_FQDN=${sql_server_fqdn}" \
-    --image "${acr_name}.azurecr.io/sqlapi:1.0" --ip-address public --ports 8080 \
+    --image "${acr_name}.azurecr.io/yadaapi:1.0" --ip-address public --ports 8080 \
     --registry-username "$acr_usr" --registry-password "$acr_pwd"
 ```
 
@@ -125,7 +125,7 @@ identity_id=$(az identity show -g $rg -n $identity_name --query id -o tsv)
 az keyvault set-policy -n $akv_name -g $rg --object-id $identity_spid --secret-permissions get list
 az container create -n api -g $rg \
     -e "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_FQDN=$sql_server_fqdn" "AKV_NAME=$akv_name" "AKV_SECRET_NAME=$akv_secret_name" \
-    --image fasthacks/sqlapi:1.0 --ip-address public --ports 8080 --assign-identity $identity_id
+    --image erjosito/yadaapi:1.0 --ip-address public --ports 8080 --assign-identity $identity_id
 ```
 
 In any case, you might need to open up the SQL Server firewall to the egress IP address of the Azure Container Instance. Note that the egress IP of an Azure Container Instance is not necessarily the same as the inbound public IP address associated to the container, so you can use the `api/ip` endpoint of the application to find it out:
@@ -167,7 +167,7 @@ spec:
         run: api
     spec:
       containers:
-      - image: fasthacks/sqlapi:1.0
+      - image: erjosito/yadaapi:1.0
         name: api
         ports:
         - containerPort: 8080
@@ -210,7 +210,7 @@ sql_password=your_db_admin_password
 svcplan_name=webappplan
 app_name_api=api-$RANDOM
 az appservice plan create -n $svcplan_name -g $rg --sku B1 --is-linux
-az webapp create -n $app_name_api -g $rg -p $svcplan_name --deployment-container-image-name fasthacks/sqlapi:1.0
+az webapp create -n $app_name_api -g $rg -p $svcplan_name --deployment-container-image-name erjosito/yadaapi:1.0
 az webapp config appsettings set -n $app_name_api -g $rg --settings "WEBSITES_PORT=8080" "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=${sql_server_fqdn}"
 az webapp restart -n $app_name_api -g $rg
 app_url_api=$(az webapp show -n $app_name_api -g $rg --query defaultHostName -o tsv) && echo $app_url_api
