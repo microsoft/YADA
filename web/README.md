@@ -4,7 +4,7 @@
 
 Simple PHP web page that can access the [YADA API](../api/README.md). It will show something like this:
 
-![web](web.png)
+![web](./homepage_screenshot.png)
 
 The container requires these environment variables:
 
