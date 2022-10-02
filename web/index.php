@@ -1,16 +1,54 @@
 <!DOCTYPE html>
 <?php
+// OpenHack branding
 if (getenv('BRANDING') == 'openhack') {
-    $logo_image = "OpenHackLogoTP.png"
+    $logo_image = "OpenHackLogoTP.png";
+    $platform = "vm";
+    $page_title = "Contoso Mortgage Company";
+    $h1_header = "OpenHack Network Diagnostics";
+    $first_link_text = "OpenHacks";
+    $first_link_url = "https://openhack.microsoft.com/";
+    $first_line = "This diagnostics app is used as sample application in the Secure Networking <a href=\"https://openhack.microsoft.com/\">OpenHack</a>. ";
+    $show_web_docs = "no";
+    $show_api_docs = "no";
+    $show_auth = "no";
+// WTH branding
 } elseif (getenv('BRANDING') == 'whatthehack') {
-    $logo_image = "wth-logo.png"
+    $logo_image = "wth-logo.png";
+    $platform = "container";
+    $page_title = "WTH Diagnostics App";
+    $h1_header = "WTH Diagnostics App";
+    $first_link_text = "WhatTheHack";
+    $first_link_url = "https://aka.ms/wth";
+    $first_line = "This diagnostics app is used as sample application in the <a href=\"https://microsoft.github.io/WhatTheHack/039-AKSEnterpriseGrade/\">Enterprise-grade AKS hack</a>. ";
+    $show_web_docs = "yes";
+    $show_api_docs = "yes";
+    $show_auth = "no";
+// Default YADA branding
 } else {
-    $logo_image = "yada-logo.png"
+    $logo_image = "yada-logo.png";
+    $platform = "container";
+    $page_title = "Yet Another Demo App";
+    $h1_header = "Yet Another Demo App";
+    $first_link_text = "Repo";
+    $first_link_url = "https://github.com/microsoft/YADA";
+    $first_line = "This is a sample diagnostics app that can be used to explore the infrastructure where it is deployed. ";
+    $show_web_docs = "yes";
+    $show_api_docs = "yes";
+    $show_auth = "yes";
+}
+// Depending on platform get hostname (either from OS or from IMDS)
+if ($platform == "vm") {
+    $cmd = "curl -H Metadata:true http://169.254.169.254/metadata/instance?api-version=2017-08-01";
+    $metadataJson = shell_exec($cmd);
+    $hostname = json_decode($metadataJson, true);
+} else {
+    $hostname = shell_exec('hostname');
 }
 ?>
 <html lang="en">
     <head>
-        <title>Contoso Mortgage Company</title>
+        <title><?php print($page_title); ?></title>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,50 +63,50 @@ if (getenv('BRANDING') == 'openhack') {
     </head>
     <body>
         <div class="header">
-			<div class="container">
+            <div class="container">
             <p style="text-align:center;"><img src="<?php print($logo_image); ?>" alt="App logo" width="80%"></p>
-				<h1 class="header-heading">OpenHack Network Diagnostics</h1>
-			</div>
-		</div>
-		<div class="nav-bar">
-			<div class="container">
-				<ul class="nav">
+                <h1 class="header-heading"><?php print($h1_header); ?></h1>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <div class="container">
+                <ul class="nav">
                 <li><a href="index.php">Home</a></li>
                     <li><a href="info.php">Info</a></li>
-                    <li><a hef="https://openhack.microsoft.com/">Microsoft OpenHacks</a></li>
-					<li><a href="healthcheck.html">Healthcheck</a></li>
-					<li><a href="healthcheck.php">PHPinfo</a></li>
-                    <!--
-					<li><a href="https://github.com/erjosito/whoami/blob/master/api/README.md">API docs</a></li>
-					<li><a href="https://github.com/erjosito/whoami/blob/master/web/README.md">Web docs</a></li>
-                    -->
-                    <!--
+                    <li><a hef="<?php print($first_link_url); ?>"><?php print($first_link_text); ?></a></li>
+                    <li><a href="healthcheck.html">Healthcheck</a></li>
+                    <li><a href="healthcheck.php">PHPinfo</a></li>
+                    <?php
+                    if ($show_web_docs == "yes") {
+                        print('                    <li><a href="https://github.com/Microsoft/YADA/blob/master/web/README.md">Web docs</a></li>');
+                    }
+                    ?><?php
+                    if ($show_api_docs == "yes") {
+                        print('                    <li><a href="https://github.com/Microsoft/YADA/blob/master/api/README.md">API docs</a></li>');
+                    }
+                    ?>
                     <li style="color:LightGray;"><?php
-                        $jwt = $_SERVER['HTTP_AUTHORIZATION'];
-                        if (empty($jwt)) {
-                            print ("Not authenticated");
-                        } else {
-                            list($header, $payload, $signature) = explode(".", $jwt);
-                            $plainPayload = base64_decode($payload);
-                            $jsonPayload = json_decode($plainPayload, true);
-                            print("Hello, ".$jsonPayload["given_name"]); 
+                        if ($show_auth == "yes") {
+                            $jwt = $_SERVER['HTTP_AUTHORIZATION'];
+                            if (empty($jwt)) {
+                                print ("Not authenticated");
+                            } else {
+                                list($header, $payload, $signature) = explode(".", $jwt);
+                                $plainPayload = base64_decode($payload);
+                                $jsonPayload = json_decode($plainPayload, true);
+                                print("Hello, ".$jsonPayload["given_name"]); 
+                            }
                         }
                     ?></li>
-                    -->
-				</ul>
-			</div>
-		</div>
+                </ul>
+            </div>
+        </div>
 
-        <div class="content" <?php print((empty(getenv("BACKGROUND"))) ? "" : "style=\"background-color:\"" . getenv("BACKGROUND") . ";\"");?> >
-			<div class="container">
-				<div class="main">
-                    <h1><?php
-                        $cmd = "curl -H Metadata:true http://169.254.169.254/metadata/instance?api-version=2017-08-01";
-                        $metadataJson = shell_exec($cmd);
-                        $result = json_decode($metadataJson, true);
-                        print($result["compute"]["name"]);
-                    ?></h1>
-                    <p>This troubleshooting app is used as sample application in the Secure Networking <a href="https://openhack.microsoft.com/">OpenHack</a>. It is a 3-tier architecture with a web component (where this page is displayed), a REST API and a database. The rest API needs outbound Internet connectivity to a public API (https://jsonip.com):</p>
+        <div class="content" <?php print((empty(getenv("BACKGROUND"))) ? "" : "style=\"background-color:" . getenv("BACKGROUND") . ";\"");?> >
+            <div class="container">
+                <div class="main">
+                    <h1><?php print($hostname); ?></h1>
+                    <p><?php print ($first_line); ?>It is a 3-tier architecture with a web component (where this page is displayed), a REST API and a database. The rest API needs outbound Internet connectivity to a public API (https://jsonip.com):</p>
                     <p style="text-align:center;"><img src="app_arch.png" alt="Application Architecture" width="80%"></p>
                     <h3>HTTP headers</h3>
                     <p>Some of the HTTP headers in your request to this web server:</p>
@@ -79,7 +117,7 @@ if (getenv('BRANDING') == 'openhack') {
                             <li>USER-AGENT: <?php print($_SERVER['HTTP_USER_AGENT'])?></li>
                         </ul>
                     <h3>Information retrieved from API <?php print(getenv("API_URL"));?>:</h3>
-                    <p>This section contains information resulting of calling some endpoints of the API. This will only work if the environment variable API_URL is set to the correct instance of an instance of the <a href="https://github.com/erjosito/whoami/blob/master/web/README.md">SQL API</a>:</p>
+                    <p>This section contains information resulting of calling some endpoints of the API. This will only work if the environment variable API_URL is set to the correct instance of an instance of the API:</p>
                     <ul>
                     <?php
                         $cmd = "curl --connect-timeout 3 " . getenv("API_URL") . "/api/healthcheck";
@@ -229,7 +267,7 @@ if (getenv('BRANDING') == 'openhack') {
         </div>
         <div class="footer">
             <div class="container">
-                &copy; Copyleft 2020
+                &copy; MIT License
             </div>
         </div>
     </body>

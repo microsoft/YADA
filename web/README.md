@@ -1,8 +1,8 @@
-# Web frontend for SQL API
+# Web frontend for YADA
 
 ## Usage
 
-Simple PHP web page that can access the [SQL API](../api/README.md). It will show something like this:
+Simple PHP web page that can access the [YADA API](../api/README.md). It will show something like this:
 
 ![web](web.png)
 
@@ -34,7 +34,7 @@ Replace the image and the text `your_api_ip_or_hostname` with the relevant value
 
 ```bash
 # Deploy on Docker
-docker run -d -p 8081:80 -e "API_URL=http://your_api_ip_or_hostname:8080" --name web fasthacks/sqlweb:1.0
+docker run -d -p 8081:80 -e "API_URL=http://your_api_ip_or_hostname:8080" --name web erjosito/yadaweb:1.0
 ```
 
 ### Run this image on an Azure Container Instance
@@ -44,7 +44,7 @@ Replace the image and the text `your_api_ip_or_hostname` with the relevant value
 ```bash
 # Deploy on ACI
 rg=your_resource_group
-az container create -n web -g $rg -e "API_URL=http://your_api_ip_or_hostname:8080" --image fasthacks/sqlweb:1.0 --ip-address public --ports 80
+az container create -n web -g $rg -e "API_URL=http://your_api_ip_or_hostname:8080" --image erjosito/yadaweb:1.0 --ip-address public --ports 80
 ```
 
 ### Run this image on Kubernetes
@@ -69,7 +69,7 @@ spec:
         run: web
     spec:
       containers:
-      - image: fasthacks/sqlweb:1.0
+      - image: erjosito/yadaweb:1.0
         name: web
         ports:
         - containerPort: 80
@@ -101,7 +101,7 @@ This example Azure CLI code deploys the image on Azure Application Services (aka
 svcplan_name=webappplan
 az appservice plan create -n $svcplan_name -g $rg --sku B1 --is-linux
 app_name_web=web-$RANDOM
-az webapp create -n $app_name_web -g $rg -p $svcplan_name --deployment-container-image-name fasthacks/sqlweb:1.0
+az webapp create -n $app_name_web -g $rg -p $svcplan_name --deployment-container-image-name erjosito/yadaweb:1.0
 az webapp config appsettings set -n $app_name_web -g $rg --settings "API_URL=http://your_api_ip_or_hostname:8080"
 az webapp restart -n $app_name_web -g $rg
 app_url_web=$(az webapp show -n $app_name_web -g $rg --query defaultHostName -o tsv) && echo $app_url_web
