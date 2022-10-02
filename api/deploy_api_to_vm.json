@@ -1,0 +1,167 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "metadata": {
+      "_generator": {
+        "name": "bicep",
+        "version": "0.8.9.13224",
+        "templateHash": "15559643551456468043"
+      }
+    },
+    "parameters": {
+      "vmName": {
+        "type": "string",
+        "defaultValue": "api01",
+        "metadata": {
+          "description": "The name of you Virtual Machine."
+        }
+      },
+      "adminUsername": {
+        "type": "string",
+        "defaultValue": "demouser",
+        "metadata": {
+          "description": "Username for the Virtual Machine."
+        }
+      },
+      "adminPassword": {
+        "type": "securestring",
+        "defaultValue": "demo!pass123",
+        "metadata": {
+          "description": "SSH Key or password for the Virtual Machine. SSH key is recommended."
+        }
+      },
+      "location": {
+        "type": "string",
+        "defaultValue": "[resourceGroup().location]",
+        "metadata": {
+          "description": "Location for all resources."
+        }
+      },
+      "availabilityZone": {
+        "type": "string",
+        "defaultValue": "",
+        "metadata": {
+          "description": "Availability Zone for VM. If not specified no AZs will be used"
+        }
+      },
+      "vmSize": {
+        "type": "string",
+        "defaultValue": "Standard_B1s",
+        "metadata": {
+          "description": "The size of the VM"
+        }
+      },
+      "virtualNetworkName": {
+        "type": "string",
+        "defaultValue": "myVNet",
+        "metadata": {
+          "description": "Name of the VNet. Needs to have been previously created in the same RG where the VM will be deployed"
+        }
+      },
+      "subnetName": {
+        "type": "string",
+        "defaultValue": "mySubnet",
+        "metadata": {
+          "description": "Name of the subnet in the virtual network. Needs to have been previously created"
+        }
+      },
+      "sqlServerFQDN":{
+        "type": "string",
+        "defaultValue": "yoursqlserver.database.windows.net",
+        "metadata": {
+            "description": "Container image that will be launched"
+        }
+      },
+      "sqlServerUser":{
+        "type": "string",
+        "defaultValue": "demouser",
+        "metadata": {
+            "description": "User for SQL auth"
+        }
+      },
+      "sqlServerPassword":{
+        "type": "securestring",
+        "defaultValue": "demo!pass123",
+        "metadata": {
+            "description": "Password for SQL auth"
+        }
+      }
+    },
+    "variables": {
+      "containerImage": "erjosito/sqlapioh:1.0",
+      "networkInterfaceName": "[format('{0}-nic', parameters('vmName'))]",
+      "osDiskType": "Standard_LRS",
+      "customData": "[concat('#!/bin/bash\ndocker run --restart always -d -p 8080:8080 -e \"SQL_SERVER_FQDN=', parameters('sqlServerFQDN'),'\" -e \"SQL_SERVER_USERNAME=', parameters('sqlServerUser'),'\" -e \"SQL_SERVER_PASSWORD=', parameters('sqlServerPassword'),'\" --name api ', variables('containerImage'))]"
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Network/networkInterfaces",
+        "apiVersion": "2021-05-01",
+        "name": "[variables('networkInterfaceName')]",
+        "location": "[parameters('location')]",
+        "properties": {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "subnet": {
+                  "id": "[concat(resourceGroup().id, '/providers/Microsoft.Network/virtualNetworks/', parameters('virtualNetworkName'), '/subnets/', parameters('subnetName'))]"
+                },
+                "privateIPAllocationMethod": "Dynamic"
+              }
+            }
+          ]
+        },
+        "dependsOn": []
+      },
+      {
+        "type": "Microsoft.Compute/virtualMachines",
+        "apiVersion": "2021-11-01",
+        "name": "[parameters('vmName')]",
+        "location": "[parameters('location')]",
+        "plan": {
+            "name": "stable-gen2",
+            "product": "flatcar-container-linux-free",
+            "publisher": "kinvolk"
+        },
+        "zones": "[if(empty(parameters('availabilityZone')),parameters('availabilityZone'),array(parameters('availabilityZone')))]",
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters('vmSize')]"
+          },
+          "storageProfile": {
+            "osDisk": {
+              "createOption": "FromImage",
+              "managedDisk": {
+                "storageAccountType": "[variables('osDiskType')]"
+              }
+            },
+            "imageReference": {
+              "publisher": "kinvolk",
+              "offer": "flatcar-container-linux-free",
+              "sku": "stable-gen2",
+              "version": "latest"
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+              }
+            ]
+          },
+          "osProfile": {
+            "computerName": "[parameters('vmName')]",
+            "customData": "[base64(variables('customData'))]",
+            "adminUsername": "[parameters('adminUsername')]",
+            "adminPassword": "[parameters('adminPassword')]"
+          }
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+        ]
+      }
+    ],
+    "outputs": {
+    }
+  }
