@@ -15,8 +15,10 @@ The container requires these environment variables:
   * `#fcba87`: light orange
   * `#fdfbc0`: yellow
 * `BRANDING` (optional): you can optionally modify the branding of YADA to match events, such as [What The Hack](https://aka.ms/wth) or [Openhack](https://openhack.microsoft.com).
+* `HEADER_NAME` (optional): if used, it checks that a HTTP header exists and matches the value of `HEADER_VALUE`
+* `HEADER_VALUE` (optional): if used, it is the value that needs to contain the header `HEADER_NAME` for the request to be accepted
 
-The container offers as well the page `/healthcheck.html` to monitor the availability of the web server.
+The container offers as well the page `/healthcheck.html` to monitor the availability of the web server, and `/healthcheck.php` to verify that PHP is working fine.
 
 ## Build
 

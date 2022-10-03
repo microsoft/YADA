@@ -1,5 +1,23 @@
 <!DOCTYPE html>
 <?php
+$headers = getallheaders();
+$key = ucfirst(getenv('HEADER_NAME'));
+if (! (empty($key))) {
+    if (array_key_exists($key, $headers)) {
+        if ($headers[$key] != getenv('HEADER_VALUE')) {
+            print("Mmmmh it looks like you are doing something that you really shouldn't: header " . $key . " is " . $headers[$key]);
+            //var_dump($headers);
+            http_response_code(403);
+            return 0;
+        }
+    } else {
+        print("Mmmmh it looks like you are doing something that you really shouldn't: I could not find the header " . $key);
+        http_response_code(403);
+        return 0;
+    }
+}
+?>
+<?php
 // OpenHack branding
 if (getenv('BRANDING') == 'openhack') {
     $logo_image = "OpenHackLogoTP.png";
