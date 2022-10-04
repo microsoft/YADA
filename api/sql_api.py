@@ -401,6 +401,25 @@ def get_default_gateway():
     except Exception as e:
         return str(e)
 
+# Print all headers
+@app.route("/api/headers", methods=['GET'])
+def headers():
+    if request.method == 'GET':
+        try:
+            return jsonify(dict(request.headers))
+        except Exception as e:
+            return jsonify(str(e))
+
+# Print all cookies
+@app.route("/api/cookies", methods=['GET'])
+def cookies():
+    if request.method == 'GET':
+        try:
+            return jsonify(dict(request.cookies))
+        except Exception as e:
+            return jsonify(str(e))
+
+
 # Route to upload file and return file size
 @app.route('/api/filesize', methods=['POST'])
 def getsize():
