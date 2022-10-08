@@ -7,6 +7,7 @@ import requests
 import dns.resolver
 import psycopg2
 import datetime
+import jwt
 from random import shuffle
 import urllib.parse
 
@@ -682,13 +683,26 @@ def reversedns():
     except Exception as e:
         return jsonify(str(e))
 
-# Flask route to provide the container's IP address
+# Flask route to provide Instance MetaData Service data
 @app.route("/api/imds", methods=['GET'])
 def imds():
     try:
         headers = {'Metadata': 'True'}
         url = 'http://169.254.169.254/metadata/instance?api-version=2017-08-01'
         msg = requests.get(url, headers=headers, timeout=1).json()
+        return jsonify(msg)
+    except Exception as e:
+        return jsonify(str(e))
+
+# Flask route to provide Instance MetaData Service data
+@app.route("/api/msitoken", methods=['GET'])
+def msitoken():
+    try:
+        headers = {'Metadata': 'True'}
+        url = 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/'
+        msg = requests.get(url, headers=headers, timeout=1).json()
+        token = msg['access_token']
+        msg['access_token_decoded'] = jwt.decode(token, options={"verify_signature": False, 'verify_aud': False})
         return jsonify(msg)
     except Exception as e:
         return jsonify(str(e))
