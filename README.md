@@ -22,6 +22,11 @@ Both the web tier and the application tier will give information about the platf
 
 Both app and web tiers are containerized and can be deployed in different platforms: Virtual machines with Docker (such as [Flatcar](https://www.flatcar.org/)), Kubernetes, Azure Container Instances, Azure Web Apps or any other container-based architecture.
 
+You can find the images for the web and API tier in these public images in Dockerhub:
+
+- erjosito/yadaweb:1.0
+- erjosito/yadaapi:1.0
+
 ## Deployment on Azure Container Instances
 
 In the README files for each tier ([web/README.md](web/README.md) and [api/README.md](api/README.md)) you can find additional instructions for deployment in multiple Azure platforms. In the following example you can find the simplest deployment of all three tiers using Azure Container Instances for the web and API tiers, and Azure SQL Database for the data tier:
