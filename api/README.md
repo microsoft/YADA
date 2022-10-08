@@ -11,6 +11,7 @@ Here you can find the source files to build this container. The container is a w
 * `/api/dns`: returns the IP address resolved from the FQDN supplied in the parameter `fqdn`
 * `/api/reversedns`: returns the FQDN resolved with reverse DNS for the IP specified in the parameter `ip`
 * `/api/printenv`: returns the environment variables for the container
+* `/api/imds`: gets the instance metadata service. Note that the IMDS endpoint is blocked if running on ACI
 * `/api/headers`: returns the HTTP headers of the request
 * `/api/cookies`: returns the HTTP cookies of the request
 * `/api/curl`: returns the output of a curl request, you can specify the argument with the parameter `url`

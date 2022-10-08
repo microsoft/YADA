@@ -404,37 +404,34 @@ def get_default_gateway():
 # Print all headers
 @app.route("/api/headers", methods=['GET'])
 def headers():
-    if request.method == 'GET':
-        try:
-            return jsonify(dict(request.headers))
-        except Exception as e:
-            return jsonify(str(e))
+    try:
+        return jsonify(dict(request.headers))
+    except Exception as e:
+        return jsonify(str(e))
 
 # Print all cookies
 @app.route("/api/cookies", methods=['GET'])
 def cookies():
-    if request.method == 'GET':
-        try:
-            return jsonify(dict(request.cookies))
-        except Exception as e:
-            return jsonify(str(e))
-
+    try:
+        return jsonify(dict(request.cookies))
+    except Exception as e:
+        return jsonify(str(e))
 
 # Route to upload file and return file size
 @app.route('/api/filesize', methods=['POST'])
 def getsize():
     try:
-      uploaded_file = request.files['data']
-      if uploaded_file:
-          f = uploaded_file.read()
-          msg = {
-             'size': len(f)
-          }
-      else:
-         msg = {
-             'size': 'unknown'
-         }
-      return jsonify(msg)
+        uploaded_file = request.files['data']
+        if uploaded_file:
+            f = uploaded_file.read()
+            msg = {
+                'size': len(f)
+            }
+        else:
+            msg = {
+                'size': 'unknown'
+            }
+        return jsonify(msg)
     except Exception as e:
         return jsonify(str(e))
 
@@ -681,6 +678,17 @@ def reversedns():
                 'ip': ip,
                 'fqdn': fqdn
         }          
+        return jsonify(msg)
+    except Exception as e:
+        return jsonify(str(e))
+
+# Flask route to provide the container's IP address
+@app.route("/api/imds", methods=['GET'])
+def imds():
+    try:
+        headers = {'Metadata': 'True'}
+        url = 'http://169.254.169.254/metadata/instance?api-version=2017-08-01'
+        msg = requests.get(url, headers=headers, timeout=1).json()
         return jsonify(msg)
     except Exception as e:
         return jsonify(str(e))
