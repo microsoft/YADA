@@ -1,11 +1,11 @@
 # Yet Another Demo App
 
-This repo contains code for a 3-tier application that can be used to explore different features of workload platforms. Other demo or helloworld apps just show a fancy page, potentially even with some functionality like To Do lists, voting options or even simulating enterprise apps. YADA doesn't pretend to be a real application, but instead it will give you information that will help you understand the underlaying infrastructure, such as:
+This repo contains code for a 3-tier application that can be used to explore workload platforms. Other demo or helloworld apps just show a fancy page, potentially even with some functionality like To Do lists, voting options or even simulating enterprise apps. YADA (Yet Another Demo App) doesn't pretend to be a real application, but instead it will give you diagnostics information that will help you understand the underlying infrastructure, such as:
 
 - IP address (private and public)
-- HTTP request headers
+- HTTP request headers and cookies
 - Instance MetaData Service (IMDS)
-- DNS resolution
+- DNS and reverse resolution
 - Access between tiers
 - Outbound connectivity
 - Drive up CPU load
@@ -22,7 +22,7 @@ Both app and web tiers are containerized and can be deployed in different platfo
 
 ## Deployment on Azure Container Instances
 
-In the files for the [web/README](web/README.md) and [api/README](api/README.md) you can find additional instructions for deployment in other platforms, in this example you can find the deployment of all three tiers using Azure Container Instances for the web and API tiers, and Azure SQL Database for the data tier:
+In the README files for each tier ([web/README.md](web/README.md) and [api/README.md](api/README.md)) you can find additional instructions for deployment in multiple Azure platforms. In the following example you can find the simplest deployment of all three tiers using Azure Container Instances for the web and API tiers, and Azure SQL Database for the data tier:
 
 ```bash
 # Variables
