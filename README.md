@@ -3,12 +3,14 @@
 This repo contains code for a 3-tier application that can be used to explore workload platforms. Other demo or helloworld apps just show a fancy page, potentially even with some functionality like To Do lists, voting options or even simulating enterprise apps. YADA (Yet Another Demo App) doesn't pretend to be a real application, but instead it will give you diagnostics information that will help you understand the underlying infrastructure, such as:
 
 - IP address (private and public)
+- IP address with which the database sees the app tier
 - HTTP request headers and cookies
 - Instance MetaData Service (IMDS)
 - DNS and reverse resolution
 - Access between tiers
-- Outbound connectivity
-- Drive up CPU load
+- Outbound connectivity with curl
+- Drive up CPU load to test autoscaling
+- Storage benchnmarking
 
 YADA is composed of a web tier and a REST-based application tier that will access a database. The database can be SQL Server, MySQL or Postgres, and no special databases need to be created:
 
