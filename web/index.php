@@ -60,11 +60,12 @@ if (getenv('BRANDING') == 'openhack') {
 }
 // Depending on platform get hostname (either from OS or from IMDS)
 if ($platform == "vm") {
-    $cmd = "curl --connect-timeout 1 -H Metadata:true http://169.254.169.254/metadata/instance?api-version=2017-08-01";
+    $cmd = "curl -s --connect-timeout 1 -H Metadata:true http://169.254.169.254/metadata/instance?api-version=2017-08-01";
     $metadataJson = shell_exec($cmd);
     # If no IMDS access fall back to the OS name
-    if (empty($metadataJson)) {
-        $hostname = json_decode($metadataJson, true);
+    if (!(empty($metadataJson))) {
+        $metadata = json_decode($metadataJson, true);
+        $hostname = $metadata['compute']['name'];
     } else {
         $hostname = shell_exec('hostname');
     }
