@@ -135,14 +135,6 @@ if ($platform == "vm") {
                     <h1><?php print($hostname); ?></h1>
                     <p><?php print ($first_line); ?>It is a 3-tier architecture with a web component (where this page is displayed), a REST API and a database. The rest API needs outbound Internet connectivity to a public API (https://jsonip.com):</p>
                     <p style="text-align:center;"><img src="app_arch.png" alt="Application Architecture" width="80%"></p>
-                    <h3>HTTP headers</h3>
-                    <p>Some of the HTTP headers in your request to this web server:</p>
-                        <ul>
-                            <li>HOST: <?php print($_SERVER['HTTP_HOST'])?></li>
-                            <li>X-FORWARDED-FOR: <?php print($_SERVER['HTTP_X_FORWARDED_FOR'])?></li>
-                            <li>REMOTE-ADDRESS: <?php print($_SERVER['REMOTE_ADDR'])?></li>
-                            <li>USER-AGENT: <?php print($_SERVER['HTTP_USER_AGENT'])?></li>
-                        </ul>
                     <h3>Information retrieved from API <?php print(getenv("API_URL"));?>:</h3>
                     <p>This section contains information resulting of calling some endpoints of the API. This will only work if the environment variable API_URL is set to the correct instance of an instance of the API:</p>
                     <ul>
@@ -189,6 +181,19 @@ if ($platform == "vm") {
                         print("                    </ul>");
                     }
                     ?>
+                    <br>
+                    <h3>HTTP headers</h3>
+                    <p>HTTP headers in your request to this web server:</p>
+                    <ul>
+                    <?php
+                        foreach($_SERVER as $h=>$v) {
+                            $retval = preg_match('/HTTP_(.+)/i', $h);
+                            if ($retval == 1) {
+                                print ("<li>" . substr($h, 5) . " = " . $v . "</li>\n");
+                            }
+                        }
+                    ?>
+                    </ul>
                     <br>
                     <h3>Other API calls</h3>
                     <p>The following sections show how to call other endpoints of the API:</p>
