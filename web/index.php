@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
 $headers = getallheaders();
-$key = ucfirst(getenv('HEADER_NAME'));
+$key = ucwords(strtolower(getenv('HEADER_NAME')));
 if (! (empty($key))) {
     if (array_key_exists($key, $headers)) {
         if ($headers[$key] != getenv('HEADER_VALUE')) {
