@@ -13,11 +13,16 @@ sql_server_name=sqlserver$random_suffix
 sql_db_name=mydb
 sql_username=azure
 sql_password=$(openssl rand -base64 10)  # 10-character random password
+api_image='erjosito/yadaapi:1.0'
+web_image='erjosito/yadaweb:1.0'
+web_image='securenetworkingopenhack/ohndweb:webapp'
 
 # Create Resource Group
+echo "Creating resource group..."
 az group create -n $rg -l $location -o none
 
 # Create Azure SQL Server and database
+echo "Creating Azure SQL..."
 az sql server create -n $sql_server_name -g $rg -l $location --admin-user "$sql_username" --admin-password "$sql_password" -o none
 az sql db create -n $sql_db_name -s $sql_server_name -g $rg -e Basic -c 5 --no-wait -o none
 sql_server_fqdn=$(az sql server show -n $sql_server_name -g $rg -o tsv --query fullyQualifiedDomainName) && echo $sql_server_fqdn
@@ -32,11 +37,22 @@ This example Azure CLI code deploys the API image on Azure Application Services 
 svcplan_name=webappplan
 svcplan_sku=B1
 app_name_api=api-$random_suffix
+echo "Creating webapp for API..."
 az appservice plan create -n $svcplan_name -g $rg --sku $svcplan_sku --is-linux -o none
-az webapp create -n $app_name_api -g $rg -p $svcplan_name --deployment-container-image-name erjosito/yadaapi:1.0 -o none
+az webapp create -n $app_name_api -g $rg -p $svcplan_name --deployment-container-image-name $api_image -o none
 az webapp config appsettings set -n $app_name_api -g $rg --settings "WEBSITES_PORT=8080" "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=${sql_server_fqdn}" -o none
 az webapp restart -n $app_name_api -g $rg -o none
-app_url_api=$(az webapp show -n $app_name_api -g $rg --query defaultHostName -o tsv) && echo $app_url_api -o none
+app_url_api=$(az webapp show -n $app_name_api -g $rg --query defaultHostName -o tsv) && echo $app_url_api
+```
+
+## Update Azure SQL firewall
+
+You can either use the `api/ip` endpoint of the application to find out the API's egress IP address, or the webapp API:
+
+```bash
+# Update Azure SQL Server IP firewall with ACI container IP
+api_egress_ip=$(curl -s "http://${app_url_api}/api/ip" | jq -r .my_public_ip)
+az sql server firewall-rule create -g "$rg" -s "$sql_server_name" -n public_api_aci-source --start-ip-address "$api_egress_ip" --end-ip-address "$api_egress_ip"
 ```
 
 ## Run the web frontend on Azure App Services
@@ -46,8 +62,9 @@ Now you can deploy the web image:
 ```bash
 # Run on Web App
 app_name_web=web-$random_suffix
-az webapp create -n $app_name_web -g $rg -p $svcplan_name --deployment-container-image-name erjosito/yadaweb:1.0 -o none
-az webapp config appsettings set -n $app_name_web -g $rg --settings "API_URL=http://${app_url_api}:8080" -o none
+echo "Creating webapp for frontend..."
+az webapp create -n $app_name_web -g $rg -p $svcplan_name --deployment-container-image-name $web_image -o none
+az webapp config appsettings set -n $app_name_web -g $rg --settings "API_URL=https://${app_url_api}" -o none
 az webapp restart -n $app_name_web -g $rg -o none
-app_url_web=$(az webapp show -n $app_name_web -g $rg --query defaultHostName -o tsv) && echo $app_url_web -o none
+app_url_web=$(az webapp show -n $app_name_web -g $rg --query defaultHostName -o tsv) && echo $app_url_web
 ```

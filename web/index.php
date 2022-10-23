@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <?php
+// If header verification is ON, this is hte first thing we do
 $headers = getallheaders();
 $key = ucwords(strtolower(getenv('HEADER_NAME')));
 if (! (empty($key))) {
@@ -31,6 +32,7 @@ if (getenv('BRANDING') == 'openhack') {
     $show_api_docs = "no";
     $show_auth = "no";
     $show_ingress_section = "no";
+    $show_api_ip = "no";
 // WTH branding
 } elseif (getenv('BRANDING') == 'whatthehack') {
     $logo_image = "wth-logo.png";
@@ -44,6 +46,7 @@ if (getenv('BRANDING') == 'openhack') {
     $show_api_docs = "yes";
     $show_auth = "no";
     $show_ingress_section = "yes";
+    $show_api_ip = "yes";
 // Default YADA branding
 } else {
     $logo_image = "yada-logo.png";
@@ -57,6 +60,7 @@ if (getenv('BRANDING') == 'openhack') {
     $show_api_docs = "yes";
     $show_auth = "yes";
     $show_ingress_section = "yes";
+    $show_api_ip = "yes";
 }
 // Depending on platform get hostname (either from OS or from IMDS)
 if ($platform == "vm") {
@@ -153,21 +157,23 @@ if ($platform == "vm") {
                     ?>
                         <li>SQL Server version: <?php print($sql_output); ?></li>
                     <?php
-                        $cmd = "curl --connect-timeout 3 " . getenv("API_URL") . "/api/ip";
-                        $result_json = shell_exec($cmd);
-                        $result = json_decode($result_json, true);
+                        if ($show_api_ip == "yes") {
+                            $cmd = "curl --connect-timeout 3 " . getenv("API_URL") . "/api/ip";
+                            $result_json = shell_exec($cmd);
+                            $result = json_decode($result_json, true);
+                            print("                        <li>Connectivity info for application tier (API endpoint /api/ip):");
+                            print("                            <ul>");
+                            print("                            <li>Private IP address: " . $result["my_private_ip"] . "</li>");
+                            print("                            <li>Public (egress) IP address: " . $result["my_public_ip"] . "</li>");
+                            print("                            <li>Default gateway: " . $result["my_default_gateway"] . "</li>");
+                            print("                            <li>HTTP request source IP address: " . $result["your_address"] . "</li>");
+                            print("                            <li>HTTP request X-Forwarded-For header: " . $result["x-forwarded-for"] . "</li>");
+                            print("                            <li>HTTP request Host header: " . $result["host"] . "</li>");
+                            print("                            <li>HTTP requested path: " . $result["path_accessed"] . "</li>");
+                            print("                            </ul>");
+                            print("                        </li>");
+                        }
                     ?>
-                        <li>Connectivity info for application tier (API endpoint /api/ip):
-                            <ul>
-                            <li>Private IP address: <?php print($result["my_private_ip"]); ?></li>
-                            <li>Public (egress) IP address: <?php print($result["my_public_ip"]); ?></li>
-                            <li>Default gateway: <?php print($result["my_default_gateway"]); ?></li>
-                            <li>HTTP request source IP address: <?php print($result["your_address"]); ?></li>
-                            <li>HTTP request X-Forwarded-For header: <?php print($result["x-forwarded-for"]); ?></li>
-                            <li>HTTP request Host header: <?php print($result["host"]); ?></li>
-                            <li>HTTP requested path: <?php print($result["path_accessed"]); ?></li>
-                            </ul>
-                        </li>
                     </ul>
                     <?php
                     if ($show_ingress_section == "yes") {
