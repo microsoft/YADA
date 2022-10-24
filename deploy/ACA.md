@@ -62,6 +62,32 @@ And we are done!
 echo "You can point your browser to https://${web_fqdn}"
 ```
 
+## Creating an internal API container
+
+If you don't want to expose the API externally you can keep the API container internal (to the Container Apps environment) and deploy it with an internal ingress:
+
+```bash
+# Create internal ACA for API container
+echo "Creating internal container app for the API container..."
+az containerapp create -n api -g $rg \
+    --image erjosito/yadaapi:1.0 --environment yada \
+    --ingress internal --target-port 8080 \
+    --env-vars "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=$sql_server_fqdn" -o none
+api_fqdn=$(az containerapp show -n api -g $rg --query properties.configuration.ingress.fqdn -o tsv)
+api_outbound_pip=$(az containerapp show -n api -g $rg --query 'properties.outboundIpAddresses' -o tsv)
+echo "Adding $api_outbound_pip to Azure SQL firewall rules..."
+az sql server firewall-rule create -g $rg -s $sql_server_name -n yadaapi --start-ip-address $api_outbound_pip --end-ip-address $api_outbound_pip -o none
+```
+
+If you have already deployed the web container you need to redeploy it to update it with the new internal fqdn address:
+
+```bash
+echo "Updating container app for the web container..."
+az containerapp create -n web -g $rg --environment yada --env-vars "API_URL=https://${api_fqdn}" "BACKGROUND=#aaf1f2" "BRANDING=whatthehack" \
+    --image erjosito/yadaweb:1.0 --ingress external --target-port 80 -o none
+web_fqdn=$(az containerapp show -n web -g $rg --query properties.configuration.ingress.fqdn -o tsv)
+```
+
 ## Using Azure Container Registry
 
 If running the image from your own Azure Container Registry, here you have an example of how to deploy the API component:
