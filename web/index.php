@@ -195,7 +195,9 @@ if ($platform == "vm") {
                         foreach($_SERVER as $h=>$v) {
                             $retval = preg_match('/HTTP_(.+)/i', $h);
                             if ($retval == 1) {
-                                print ("<li>" . substr($h, 5) . " = " . $v . "</li>\n");
+                                // Change underscores per hyphens, change capitalization
+                                $h_name = ucwords(strtolower(str_replace('_', '-', substr($h, 5))), '-');
+                                print ("<li>" . $h_name . " = " . $v . "</li>\n");
                             }
                         }
                     ?>
