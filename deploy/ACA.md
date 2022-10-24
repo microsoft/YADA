@@ -39,7 +39,8 @@ echo "Creating container app for the API container..."
 az containerapp create -n api -g $rg \
     --image erjosito/yadaapi:1.0 --environment yada \
     --ingress external --target-port 8080 \
-    --env-vars "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=$sql_server_fqdn" -o none
+    --secrets "sqlserverpassword=$sql_password" \
+    --env-vars "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=secretref:sqlserverpassword" "SQL_SERVER_FQDN=$sql_server_fqdn" -o none
 api_fqdn=$(az containerapp show -n api -g $rg --query properties.configuration.ingress.fqdn -o tsv)
 healthcheck=$(curl -s "https://${api_fqdn}/api/healthcheck" | jq '.health')
 if [[ "$healthcheck" == "OK" ]]; then
@@ -72,7 +73,8 @@ echo "Creating internal container app for the API container..."
 az containerapp create -n api -g $rg \
     --image erjosito/yadaapi:1.0 --environment yada \
     --ingress internal --target-port 8080 \
-    --env-vars "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=$sql_server_fqdn" -o none
+    --secrets "sqlserverpassword=$sql_password" \
+    --env-vars "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=secretref:sqlserverpassword" "SQL_SERVER_FQDN=$sql_server_fqdn" -o none
 api_fqdn=$(az containerapp show -n api -g $rg --query properties.configuration.ingress.fqdn -o tsv)
 api_outbound_pip=$(az containerapp show -n api -g $rg --query 'properties.outboundIpAddresses' -o tsv)
 echo "Adding $api_outbound_pip to Azure SQL firewall rules..."
@@ -99,7 +101,8 @@ az acr update -n "$acr_name" --admin-enabled true -o none
 acr_usr=$(az acr credential show -n "$acr_name" -g "$rg" --query 'username' -o tsv)
 acr_pwd=$(az acr credential show -n "$acr_name" -g "$rg" --query 'passwords[0].value' -o tsv)
 az containerapp create -n api -g $rg --environment yada  \
-    --env-vars "SQL_SERVER_USERNAME=${sql_username}" "SQL_SERVER_PASSWORD=${sql_password}" "SQL_SERVER_FQDN=${sql_server_fqdn}" \
+    --secrets "sqlserverpassword=$sql_password" \
+    --env-vars "SQL_SERVER_USERNAME=${sql_username}" "SQL_SERVER_PASSWORD=secretref:sqlserverpassword" "SQL_SERVER_FQDN=${sql_server_fqdn}" \
     --image "${acr_name}.azurecr.io/yadaapi:1.0" --ingress external --target-port 8080 \
     --registry-server "${acr_name}.azurecr.io" --registry-username "$acr_usr" --registry-password "$acr_pwd" -o none
 ```
