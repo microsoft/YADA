@@ -36,6 +36,7 @@ The following files contain instructions to deploy YADA on different platforms:
 - [Deploy on public ACI with TLS on nginx](./deploy/ACI_nginx_sidecar.md)
 - [Deploy on Kubernetes](./deploy/k8s.md)
 - [Deploy on WebApps](./deploy/webapp.md)
+- [Deploy on virtual machines](./deploy/vm.md)
 
 ## Contributing
 
