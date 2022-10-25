@@ -20,7 +20,7 @@ Both the web tier and the application tier will give information about the platf
 
 ![Web tier](./web/homepage_screenshot.png)
 
-Both app and web tiers are containerized and can be deployed in different platforms: Virtual machines with Docker (such as [Flatcar](https://www.flatcar.org/)), Kubernetes, Azure Container Instances, Azure Web Apps or any other container-based architecture.
+Both app and web tiers are containerized and can be deployed in different platforms: Virtual machines with Docker (such as [Flatcar](https://www.flatcar.org/)), Kubernetes, Azure Container Apps, Azure Container Instances, Azure Web Apps or any other container-based architecture.
 
 You can find the images for the web and API tier in these public images in Dockerhub:
 
@@ -32,6 +32,7 @@ You can find the images for the web and API tier in these public images in Docke
 The following files contain instructions to deploy YADA on different platforms:
 
 - [Deploy on Docker containers](./deploy/docker.md)
+- [Deploy on public Azure Container Apps](./deploy/ACA.md)
 - [Deploy on public Azure Container Instances](./deploy/ACI_public.md)
 - [Deploy on public ACI with TLS on nginx](./deploy/ACI_nginx_sidecar.md)
 - [Deploy on Kubernetes](./deploy/k8s.md)
@@ -40,7 +41,7 @@ The following files contain instructions to deploy YADA on different platforms:
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
