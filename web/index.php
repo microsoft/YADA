@@ -157,22 +157,22 @@ if ($platform == "vm") {
                     ?>
                         <li>SQL Server version: <?php print($sql_output); ?></li>
                     <?php
+                        $cmd = "curl --connect-timeout 3 " . getenv("API_URL") . "/api/ip";
+                        $result_json = shell_exec($cmd);
+                        $result = json_decode($result_json, true);
+                        print("                        <li>Connectivity info for application tier (API endpoint /api/ip):");
+                        print("                            <ul>");
+                        print("                            <li>API's private IP address: " . $result["my_private_ip"] . "</li>");
+                        print("                            <li>API's egress public IP address obtained from jsonip.com: " . $result["my_public_ip"] . "</li>");
                         if ($show_api_ip == "yes") {
-                            $cmd = "curl --connect-timeout 3 " . getenv("API_URL") . "/api/ip";
-                            $result_json = shell_exec($cmd);
-                            $result = json_decode($result_json, true);
-                            print("                        <li>Connectivity info for application tier (API endpoint /api/ip):");
-                            print("                            <ul>");
-                            print("                            <li>Private IP address: " . $result["my_private_ip"] . "</li>");
-                            print("                            <li>Public (egress) IP address: " . $result["my_public_ip"] . "</li>");
-                            print("                            <li>Default gateway: " . $result["my_default_gateway"] . "</li>");
+                            print("                            <li>API's default gateway: " . $result["my_default_gateway"] . "</li>");
                             print("                            <li>HTTP request source IP address: " . $result["your_address"] . "</li>");
                             print("                            <li>HTTP request X-Forwarded-For header: " . $result["x-forwarded-for"] . "</li>");
                             print("                            <li>HTTP request Host header: " . $result["host"] . "</li>");
                             print("                            <li>HTTP requested path: " . $result["path_accessed"] . "</li>");
-                            print("                            </ul>");
-                            print("                        </li>");
                         }
+                        print("                            </ul>");
+                        print("                        </li>");
                     ?>
                     </ul>
                     <?php
@@ -206,6 +206,22 @@ if ($platform == "vm") {
                     <h3>Other API calls</h3>
                     <p>The following sections show how to call other endpoints of the API:</p>
 
+                    <h4 id="api-egressip">API's egress IP address</h4>
+                    <p>Egress IP address for the API component:</p>
+                    <form action="index.php#api-egressip" method="get">
+                        <input type="hidden" id="command" name="command" value="egressip">
+                        <input type="submit">
+                    </form>
+                    <?php 
+                        if (strcmp($_GET["command"], 'egressip') == 0) {
+                            $cmd = "curl --connect-timeout 3 " . getenv("API_URL") . "/api/ip";
+                            $result_json = shell_exec($cmd);
+                            $result = json_decode($result_json, true);
+                            print("<p>Result: <b>" . $result["my_public_ip"] . "</b></p>");
+                        }
+                    ?>
+
+                    <hr>
                     <h4 id="api-sqlsrcip">SQL source IP</h4>
                     <p>Source IP from which the database sees the API:</p>
                     <form action="index.php#api-sqlsrcip" method="get">
@@ -257,7 +273,7 @@ if ($platform == "vm") {
                     <h4 id="api-curl">Send HTTP request</h4>
                     <p>This API endpoint will trigger an HTTP GET request from the application component to the URL you specify:</p>
                     <form action="index.php#api-curl" method="get">
-                        URL to call (including http://): <input type="text" name="url" value="<?php print($_GET["url"]); ?>"><br>
+                        URL to call (for example, http://jsonip.com): <input type="text" name="url" value="<?php print($_GET["url"]); ?>"><br>
                         <input type="hidden" id="command" name="command" value="curl">
                         <input type="submit">
                     </form>

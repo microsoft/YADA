@@ -15,7 +15,6 @@ sql_username=azure
 sql_password=$(openssl rand -base64 10)  # 10-character random password
 api_image='erjosito/yadaapi:1.0'
 web_image='erjosito/yadaweb:1.0'
-web_image='securenetworkingopenhack/ohndweb:webapp'
 
 # Create Resource Group
 echo "Creating resource group..."
