@@ -164,9 +164,9 @@ if ($platform == "vm") {
                         print("                            <ul>");
                         print("                            <li>API's private IP address: " . $result["my_private_ip"] . "</li>");
                         print("                            <li>API's egress public IP address obtained from jsonip.com: " . $result["my_public_ip"] . "</li>");
+                        print("                            <li>HTTP request source IP address: " . $result["your_address"] . "</li>");
                         if ($show_api_ip == "yes") {
                             print("                            <li>API's default gateway: " . $result["my_default_gateway"] . "</li>");
-                            print("                            <li>HTTP request source IP address: " . $result["your_address"] . "</li>");
                             print("                            <li>HTTP request X-Forwarded-For header: " . $result["x-forwarded-for"] . "</li>");
                             print("                            <li>HTTP request Host header: " . $result["host"] . "</li>");
                             print("                            <li>HTTP requested path: " . $result["path_accessed"] . "</li>");
@@ -187,6 +187,9 @@ if ($platform == "vm") {
                         print("                    </ul>");
                     }
                     ?>
+                    <br>
+                    <h3>Your IP address</h3>
+                    <p>Your IP address as stored in the REMOTE_ADDR PHP server variable: <?php print($_SERVER['REMOTE_ADDR'])?></p>
                     <br>
                     <h3>HTTP headers</h3>
                     <p>HTTP headers in your request to this web server:</p>
