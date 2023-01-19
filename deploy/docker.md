@@ -16,7 +16,7 @@ Now you can deploy the API tier. You can find out the IP address of the database
 # Find out IP address of database
 sql_ip=$(docker inspect sql | jq -r '.[0].NetworkSettings.Networks.bridge.IPAddress')
 # Deploy API on Docker
-docker run -d -p 8080:8080 -e "SQL_SERVER_FQDN=${sql_ip}" -e "SQL_SERVER_USERNAME=sa" -e "SQL_SERVER_PASSWORD=your_db_admin_password" --name api erjosito/yadaapi:1.0
+docker run --restart always -d -p 8080:8080 -e "SQL_SERVER_FQDN=${sql_ip}" -e "SQL_SERVER_USERNAME=sa" -e "SQL_SERVER_PASSWORD=your_db_admin_password" --name api erjosito/yadaapi:1.0
 ```
 
 You can use `docker inspect` to find out the IP address of the API container
