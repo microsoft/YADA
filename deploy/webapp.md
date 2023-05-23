@@ -50,7 +50,7 @@ You can either use the `api/ip` endpoint of the application to find out the API'
 
 ```bash
 # Update Azure SQL Server IP firewall with ACI container IP
-api_egress_ip=$(curl -s "http://${app_url_api}/api/ip" | jq -r .my_public_ip)
+api_egress_ip=$(curl -s "https://${app_url_api}/api/ip" | jq -r .my_public_ip)
 az sql server firewall-rule create -g "$rg" -s "$sql_server_name" -n public_api_aci-source --start-ip-address "$api_egress_ip" --end-ip-address "$api_egress_ip"
 ```
 
