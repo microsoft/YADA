@@ -1,0 +1,255 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "YADA API",
+    "description": "Samples to use the Yet Another Demo Application (YADA) API. Check this for more information: https://github.com/Microsoft/YADA",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "{{YADA_API_URL}}"
+    }
+  ],
+  "paths": {
+    "/api/healthcheck": {
+      "get": {
+        "summary": "HEALTHCHECK",
+        "description": "HEALTHCHECK",
+        "operationId": "healthcheck",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/ip": {
+      "get": {
+        "summary": "IP",
+        "description": "IP",
+        "operationId": "ip",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/sqlversion": {
+      "get": {
+        "summary": "SQLVERSION",
+        "description": "SQLVERSION",
+        "operationId": "sqlversion",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/sqlsrcip": {
+      "get": {
+        "summary": "SQLSRCIP",
+        "description": "SQLSRCIP",
+        "operationId": "sqlsrcip",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/printenv": {
+      "get": {
+        "summary": "PRINTENV",
+        "description": "PRINTENV",
+        "operationId": "printenv",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/headers": {
+      "get": {
+        "summary": "HEADERS",
+        "description": "HEADERS",
+        "operationId": "headers",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/cookies": {
+      "get": {
+        "summary": "COOKIES",
+        "description": "COOKIES",
+        "operationId": "cookies",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/pi": {
+      "get": {
+        "summary": "PI",
+        "description": "PI",
+        "operationId": "pi",
+        "parameters": [
+          {
+            "name": "digits",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "10"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/imds": {
+      "get": {
+        "summary": "IMDS",
+        "description": "IMDS",
+        "operationId": "imds",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/msitoken": {
+      "get": {
+        "summary": "MSITOKEN",
+        "description": "MSITOKEN",
+        "operationId": "msitoken",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/akvsecret": {
+      "get": {
+        "summary": "AKVSECRET",
+        "description": "AKVSECRET",
+        "operationId": "akvsecret",
+        "parameters": [
+          {
+            "name": "akvname",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "erjositoKeyvault"
+            }
+          },
+          {
+            "name": "akvsecret",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "defaultPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/dns": {
+      "get": {
+        "summary": "DNS",
+        "description": "DNS",
+        "operationId": "dns",
+        "parameters": [
+          {
+            "name": "fqdn",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "microsoft.com"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/reversedns": {
+      "get": {
+        "summary": "REVERSEDNS",
+        "description": "REVERSEDNS",
+        "operationId": "reversedns",
+        "parameters": [
+          {
+            "name": "ip",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "20.70.246.20"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/curl": {
+      "get": {
+        "summary": "CURL",
+        "description": "CURL",
+        "operationId": "curl",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "http://ifconfig.me"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/ioperf": {
+      "get": {
+        "summary": "IOPERF",
+        "description": "IOPERF",
+        "operationId": "ioperf",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
