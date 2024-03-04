@@ -68,7 +68,7 @@ echo "Creating API VM..."
 start_time=`date +%s`
 az vm create -n $api_vm_name -g $rg -l $location --image "${publisher}:${offer}:${sku}:${version}" --generate-ssh-keys --size $vm_size \
     --public-ip-address "${api_vm_name}-pip" --public-ip-sku Standard --vnet-name $vnet_name --nsg '' \
-    --subnet $subnet_name --custom-data $api_cloudinit_file -o none
+    --subnet $subnet_name --custom-data $api_cloudinit_file --security-type Standard -o none
 run_time=$(expr `date +%s` - $start_time)
 ((minutes=${run_time}/60))
 ((seconds=${run_time}%60))
@@ -97,7 +97,7 @@ EOF
 echo "Creating Web VM..."
 az vm create -n $web_vm_name -g $rg -l $location --image "${publisher}:${offer}:${sku}:${version}" --generate-ssh-keys --size $vm_size \
     --public-ip-address "${web_vm_name}-pip" --public-ip-sku Standard --vnet-name $vnet_name --nsg '' \
-    --subnet $subnet_name --custom-data $web_cloudinit_file -o none
+    --subnet $subnet_name --custom-data $web_cloudinit_file --security-type Standard -o none
 web_public_ip=$(az network public-ip show -n "${web_vm_name}-pip" -g $rg --query ipAddress -o tsv)
 # Finish
 echo "You can now browse to http://$web_public_ip"
