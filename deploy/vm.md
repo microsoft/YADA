@@ -73,7 +73,7 @@ run_time=$(expr `date +%s` - $start_time)
 ((minutes=${run_time}/60))
 ((seconds=${run_time}%60))
 api_nic_id=$(az vm show -n $api_vm_name -g "$rg" --query 'networkProfile.networkInterfaces[0].id' -o tsv)
-api_private_ip=$(az network nic show --ids $api_nic_id --query 'ipConfigurations[0].privateIpAddress' -o tsv)
+api_private_ip=$(az network nic show --ids $api_nic_id --query 'ipConfigurations[0].privateIPAddress' -o tsv)
 api_public_ip=$(az network public-ip show -n "${api_vm_name}-pip" -g $rg --query ipAddress -o tsv)
 echo "Virtual machine provisioned in $minutes minutes and $seconds seconds, private IP $api_private_ip and public IP $api_public_ip. Checking health now..."
 # Update Azure SQL Server IP firewall with ACI container IP
