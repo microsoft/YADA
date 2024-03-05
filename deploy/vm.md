@@ -91,7 +91,7 @@ The web frontend can be created in a similar way:
 web_cloudinit_file=/tmp/web_cloudinit.txt
 cat <<EOF > $web_cloudinit_file
 #!/bin/bash
-docker run --restart always -d -p 80:80 -e "API_URL=http://${api_private_ip}:8080" --name web $web_image
+docker run --restart always -d -p 80:80 -e "API_URL=http://${api_private_ip}:8080" --name yadaweb $web_image
 EOF
 # Create Web VM
 echo "Creating Web VM..."
@@ -152,7 +152,7 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
 apt-cache policy docker-ce
 apt install -y docker-ce
-docker run --restart always -d -p 80:80 -e "API_URL=http://${apiubuntu_private_ip}:8080" --name web $web_image
+docker run --restart always -d -p 80:80 -e "API_URL=http://${apiubuntu_private_ip}:8080" --name yadaweb $web_image
 EOF
 # Create Web VM
 echo "Creating Web Ubuntu VM..."
