@@ -27,13 +27,14 @@ sql_server_fqdn=$(az sql server show -n $sql_server_name -g $rg -o tsv --query f
 You can use the sample manifest to deploy the API component, modifying the relevant environment variables. Note that this basic deployment doesn't use secrets or integration with Azure Key Vault:
 
 ```yml
+kubectl apply -f - <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
   name: sqlpassword
 type: Opaque
 stringData:
-  password: your_db_admin_password
+  password: $sql_password
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -59,9 +60,9 @@ spec:
           protocol: TCP
         env:
         - name: SQL_SERVER_USERNAME
-          value: "your_db_admin_username"
+          value: "$sql_username"
         - name: SQL_SERVER_FQDN
-          value: "your_db_server_fqdn"
+          value: "$sql_server_fqdn"
         - name: SQL_SERVER_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -73,6 +74,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: api
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   ports:
@@ -80,6 +83,7 @@ spec:
     targetPort: 8080
   selector:
     run: api
+EOF
 ```
 
 ## Web
@@ -87,6 +91,7 @@ spec:
 You can use the sample manifest to deploy the web component. It uses `api` as the IP address of the API tier, leveraging Kubernetes DNS-based resolution of service names (it assumes the API service is deployed in the same namespace):
 
 ```yml
+kubectl apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -118,6 +123,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: web
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   type: LoadBalancer
   ports:
@@ -125,4 +132,5 @@ spec:
     targetPort: 80
   selector:
     run: web
+EOF
 ```
