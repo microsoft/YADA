@@ -41,6 +41,7 @@ COPY app_arch.png /var/www/html/app_arch.png
 COPY OpenHackLogoTP.png /var/www/html/OpenHackLogoTP.png
 COPY wth-logo.png /var/www/html/wth-logo.png
 COPY yada-logo.png /var/www/html/yada-logo.png
+COPY fta-logo.png /var/www/html/fta-logo.png
 
 # Expose apache.
 EXPOSE 80 2222

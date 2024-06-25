@@ -47,6 +47,20 @@ if (getenv('BRANDING') == 'openhack') {
     $show_auth = "no";
     $show_ingress_section = "yes";
     $show_api_ip = "yes";
+// FTA branding
+} elseif (getenv('BRANDING') == 'fta') {
+    $logo_image = "fta-logo.png";
+    $platform = "container";
+    $page_title = "YADA - Diagnostics App";
+    $h1_header = "YADA - Diagnostics App";
+    $first_link_text = "FastTrack for Azure";
+    $first_link_url = "https://azure.microsoft.com/pricing/offers/azure-fasttrack/";
+    $first_line = "The <a href=\"https://github.com/Microsoft/YADA\">YADA App</a> is used as sample application.";
+    $show_web_docs = "yes";
+    $show_api_docs = "yes";
+    $show_auth = "no";
+    $show_ingress_section = "yes";
+    $show_api_ip = "yes";
 // Default YADA branding
 } else {
     $logo_image = "yada-logo.png";
